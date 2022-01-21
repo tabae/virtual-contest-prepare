@@ -6,6 +6,13 @@ src_dir = '/path/to/saved_html_file'
 src_file = 'AtCoder Problems.html'
 out_dir = '/path/to/contest_directory'
 
+if(len(sys.argv) >= 2):
+    if(sys.argv[1] == '--help' or sys.argv[1] == '-h'):
+        print('Usage: python3 ' + sys.argv[0] + ' [contest directory (optional)]')
+        sys.exit()
+    else:
+        out_dir = sys.argv[1]
+
 fname = src_dir + '/' + src_file
 with open(fname) as f:
     html = f.read()
