@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import os
+import sys
 
 src_dir = '/path/to/saved_html_file'
 src_file = 'AtCoder Problems.html'
@@ -16,8 +17,10 @@ for ele in soup.find_all('a'):
     if(url != None and url.startswith('https://atcoder.jp/contests/')):
         problems.append(url)
 
+problems = list(dict.fromkeys(problems))
+
 os.chdir(out_dir)
-for i in range(7):
+for i in range(len(problems)):
     os.chdir(chr(ord('a')+i))
     os.system('touch test')
     os.system('rm -rf test')
