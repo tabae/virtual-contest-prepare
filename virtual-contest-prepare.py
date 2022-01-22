@@ -1,21 +1,25 @@
 from bs4 import BeautifulSoup
 import os
 import sys
-
-src_dir = '/path/to/saved_html_file'
-src_file = 'AtCoder Problems.html'
-out_dir = '/path/to/contest_directory'
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
 if(len(sys.argv) >= 2):
     if(sys.argv[1] == '--help' or sys.argv[1] == '-h'):
-        print('Usage: python3 ' + sys.argv[0] + ' [contest directory (optional)]')
-        sys.exit()
+        print('Usage: python3 ' + sys.argv[0] + ' [URL of virtual contest page]')
+        sys.exit(0)
     else:
         out_dir = sys.argv[1]
 
-fname = src_dir + '/' + src_file
-with open(fname) as f:
-    html = f.read()
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+driver.get(sys.argv[1])
+time.sleep(1)
+
+html = driver.page_source
 soup = BeautifulSoup(html, "html.parser")
 
 problems = []
@@ -26,7 +30,10 @@ for ele in soup.find_all('a'):
 
 problems = list(dict.fromkeys(problems))
 
-os.chdir(out_dir)
+if(not problems):
+    print('Error: failed to download problems from AtCoder Problems')
+    sys.exit(0)
+
 for i in range(len(problems)):
     os.chdir(chr(ord('a')+i))
     os.system('touch test')
